@@ -6,14 +6,17 @@ This cordapp-example application allows a party (lender) to issue an IOU to anot
 ## States
 
 * `IOUState`: This is a [LinearState](https://docs.r3.com/en/platform/corda/4.9/community/api-states.html#linearstate) and a [QueryableState](https://docs.r3.com/en/platform/corda/4.9/community/api-states.html#the-queryablestate-and-schedulablestate-interfaces) that represents an IOU that can be issued by one party (lender) to another party (borrower).
+* `SilverBarState`: This is a [LinearState](https://docs.r3.com/en/platform/corda/4.9/community/api-states.html#linearstate) and a [QueryableState](https://docs.r3.com/en/platform/corda/4.9/community/api-states.html#the-queryablestate-and-schedulablestate-interfaces) that represents a silver bar. It includes information about the weight of the silver bar, the owner (Party), and the issuer (Party).
 
 ## Contracts
 
 * `IOUContract`: This is used to govern the evolution of an IOUState. This file includes validation rules governing the `Create` command for `IOUState`.
+* `SilverBarContract`: This governs the evolution of a `SilverBarState`. It includes validation rules for issuing a silver bar. Specifically, it ensures that no inputs are consumed, only one output state is created, and the weight of the silver bar is positive.
 
 ## Flows
 
 * `ExampleFlow`: This flow is used to create an `IOUState`. It takes 2 arguments as the parameters: the `iouValue` (Int) and the `otherParty` (Party).
+* `IssueSilverBarFlow`: This flow is used to create a `SilverBarState`. It takes 2 arguments as the parameters: the `weight` (Double) of the silver bar and the `owner` (Party). It handles the generation, verification, and signing of the transaction, and gathers the required signatures from other involved parties before finalizing the transaction.
 
 ## Pre-requisites:
 [Set up for CorDapp development](https://docs.r3.com/en/platform/corda/4.9/community/getting-set-up.html)
@@ -48,4 +51,13 @@ This command will output all the States in Party B's vault which has a contract 
 
 You've now successfully issued an `IOUState` of value 20, from Party A to Party B!
 
+### ExampleFlow for SilverBar
+To create a Silver Bar, you can start the `IssueSilverBarFlow` from the command line or via an RPC client:
+```
+flow start IssueSilverBarFlow weight: 10.0, owner: PartyB
+```
 
+To check that you've successfully issued an IOU from Party A to Party B, navigate to the Party B Corda interactive shell to check all of the existing `IOUState` in Party B's vault. Type:
+```
+run vaultQuery contractStateType: "net.corda.samples.example.states.SilverBarState"
+```

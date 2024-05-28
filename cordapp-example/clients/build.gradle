@@ -31,6 +31,16 @@ springBoot {
     mainClassName = "net.corda.samples.example.webserver.ServerKt"
 }
 
+// The Client is the communication channel between the external and the node. This task will help you immediately
+// execute your rpc methods in the main method of the ClientSilverBar.kt. You can somewhat see this as a quick test of making
+// RPC calls to your nodes.
+task runClientSilverBar(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.corda.samples.example.ClientSilverBarKt'
+    args 'localhost:10016', 'user1', 'test'
+}
+
+
 /* The Client is the communication channel between the external and the node. This task will help you immediately
  * execute your rpc methods in the main method of the client.kt. You can somewhat see this as a quick test of making
  * RPC calls to your nodes.

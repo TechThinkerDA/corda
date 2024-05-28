@@ -13,4 +13,16 @@
             <column name="linear_id" type="NVARCHAR(64)"/>
         </createTable>
     </changeSet>
+    <changeSet author="R3.Corda" id="create_silver_bar_state">
+        <createTable tableName="silver_bars">
+            <column name="output_index" type="INT"/>
+            <column name="transaction_id" type="NVARCHAR(64)"/>
+            <column name="owner" type="NVARCHAR(64)"/>
+            <column name="issuer" type="NVARCHAR(64)"/>
+            <column name="weight" type="DOUBLE"/>
+            <column name="linear_id" type="NVARCHAR(64)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

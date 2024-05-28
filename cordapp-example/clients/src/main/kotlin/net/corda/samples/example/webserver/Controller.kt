@@ -1,7 +1,5 @@
 package net.corda.samples.example.webserver
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import net.corda.client.jackson.JacksonSupport.createNonRpcMapper
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.messaging.startTrackedFlow
@@ -11,7 +9,6 @@ import net.corda.samples.example.flows.ExampleFlow.Initiator
 import net.corda.samples.example.states.IOUState
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 import net.corda.client.jackson.JacksonSupport
+import net.corda.samples.example.states.SilverBarState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 
@@ -118,5 +116,13 @@ class Controller(rpc: NodeRPCConnection) {
     fun getMyIOUs(): ResponseEntity<List<StateAndRef<IOUState>>> {
         val myious = proxy.vaultQueryBy<IOUState>().states.filter { it.state.data.lender.equals(proxy.nodeInfo().legalIdentities.first()) }
         return ResponseEntity.ok(myious)
+    }
+
+    /**
+     * Displays all SilverBar states that exist in the node's vault.
+     */
+    @GetMapping(value = ["silver-bars"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getSilverBars(): ResponseEntity<List<StateAndRef<SilverBarState>>> {
+        return ResponseEntity.ok(proxy.vaultQueryBy<SilverBarState>().states)
     }
 }
